@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopApp.Business.Abstract;
+using ShopAppWebUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,11 @@ namespace ShopAppWebUI.Controllers
         }
         public IActionResult Index()
         {
-            return View(_productService.GetAll());
+            return View(new ProductListModel()
+            {
+
+                Products = _productService.GetPopularProducts()
+            }) ;
         }
     }
 }

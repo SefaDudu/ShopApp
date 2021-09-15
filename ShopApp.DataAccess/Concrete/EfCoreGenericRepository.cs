@@ -9,8 +9,8 @@ using System.Text;
 namespace ShopApp.DataAccess.Concrete
 {
     public class EfCoreGenericRepository<TEntity, TContext> : IRepository<TEntity>
-       where TEntity : class
-        where TContext : DbContext, new()
+       where TEntity : class,new()
+        where TContext :DbContext,new() 
     {
         public void Create(TEntity entity)
         {
@@ -30,7 +30,7 @@ namespace ShopApp.DataAccess.Concrete
             }
         }
 
-        public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> filter=null)
+        public List<TEntity> GetAll(Expression<Func<TEntity, bool>> filter=null)
         {
             using (var context = new TContext())
             {
