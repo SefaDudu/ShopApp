@@ -39,7 +39,17 @@ namespace ShopApp.Business.Concrete
 
         public List<Product> GetPopularProducts()
         {
-            return _productDal.GetAll(p=>p.Price>2000);
+            return _productDal.GetAll();
+        }
+
+        public List<Product> GetProductsByCategory(string category, int page,int pageSize)
+        {
+            return _productDal.GetProductsByCategory(category, page, pageSize);
+        }
+
+        public Product GetPRoductDetails(int id)
+        {
+            return _productDal.GetProductDetails(id);
         }
 
         public void Update(Product entity)

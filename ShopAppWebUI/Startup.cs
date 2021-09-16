@@ -1,3 +1,4 @@
+using Glimpse.AspNet.Tab;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,7 @@ using ShopApp.Business.Concrete;
 using ShopApp.DataAccess.Abstract;
 using ShopApp.DataAccess.Concrete;
 using ShopApp.DataAccess.Concrete.EntityFrameworkCore;
-using ShopApp.DataAccess.Concrete.Memory;
+
 
 using System;
 using System.Collections.Generic;
@@ -34,10 +35,12 @@ namespace ShopAppWebUI
         {
             services.AddScoped<IProductDal, EfProductDal>();
             services.AddScoped<IProductService, ProductManager>();
-           
-            services.AddMvc();
+            services.AddScoped<ICategoryDal, EfCategoryDal>();
+            services.AddScoped<ICategoryService, CategoryManager>();
+            services.AddControllers(options => options.EnableEndpointRouting = false);
+
             services.AddMvcCore();
-            
+            services.AddMvc(options => options.EnableEndpointRouting = false);
 
 
         }
@@ -56,13 +59,29 @@ namespace ShopAppWebUI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-         
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                   name: "products",
+                   pattern: "products/{category?}",
+                   defaults:new { controller = "Shop", action = "List" }
+                   );
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                    );
+
+                endpoints.MapRazorPages();
+
+            });
+           
+        
+           
 
             app.UseEndpoints(endpoints =>
             {
